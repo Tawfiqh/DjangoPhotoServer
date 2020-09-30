@@ -39,7 +39,7 @@ function showNextImage(loadTimeout=2000){
 }
 
 function loadImageIntoFrame(){
-    console.log("loading new ImageIntoFrame");
+    console.log("loading new ImageIntoFrame (in the background)");
 
     updatePhotoFrame(nonVisiblePhotoFrame())
 
