@@ -1,4 +1,4 @@
-function updateBackgroundPhotoFrame(frameNumber){
+function updatePhotoFrame(frameNumber){
 
     var imageFrame = document.getElementById("photoFrame"+frameNumber);
     imageFrame.src = '';
@@ -20,7 +20,7 @@ function hideForegroundPhotoFrame(){
 }
 
 
-function backgroundPhotoFrame(){
+function nonVisiblePhotoFrame(){
     if(currentPhotoFrame == 1){
         return 2
     }
@@ -29,20 +29,22 @@ function backgroundPhotoFrame(){
     }
 }
 
+function showNextImage(loadTimeout=2000){
+    console.log('showNextImage')
+    hideForegroundPhotoFrame();
+    currentPhotoFrame = nonVisiblePhotoFrame();
+    
+    // Foreground takes 2s to hide, so need to reload AFTER that.
+    return setTimeout(loadImageIntoFrame, loadTimeout);
+}
+
 function loadImageIntoFrame(){
     console.log("loading new ImageIntoFrame");
 
-    updateBackgroundPhotoFrame(backgroundPhotoFrame())
+    updatePhotoFrame(nonVisiblePhotoFrame())
 
     // Wait for the background of the other to actually load - other it will load and pop halfway through the fade-transition
-    setTimeout(function(){
-
-        hideForegroundPhotoFrame();
-        currentPhotoFrame = backgroundPhotoFrame();
-        
-        // Foreground takes about 2.5s to hide, so need to reload AFTER that.
-        setTimeout(loadImageIntoFrame, 2500);
-    }, waitForLoadMs);
+    currentTransitionTimeout = setTimeout(showNextImage, waitForLoadMs);
 
     refreshCount+=1;
     if(refreshCount >= reloadPageAfterThisManyImages){
@@ -51,39 +53,23 @@ function loadImageIntoFrame(){
     }
 }
 
-
-var currentPhotoFrame = 2;
-var refreshCount = 0;  //reload the page after this many files so that the browser can cleanup  memory.
-
-var waitForLoadMs = 10  *1000;
-
-
-
-// https://davidwalsh.name/query-string-javascript
-function getUrlParameter(name) {
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    var results = regex.exec(location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
-
-var reloadPageAfterThisManyImages = 20
-
-if( getUrlParameter('light') ){
-
-    reloadPageAfterThisManyImages = getUrlParameter('light')
-    if( isNaN(reloadPageAfterThisManyImages) ){
-	reloadPageAfterThisManyImages = 6
-    }
-    
+// Doesn't work as you need to wait for the transition to end before clicking again
+function forceNewPicture1(){
+    clearTimeout(currentTransitionTimeout)
+    currentTransitionTimeout = showNextImage();
 }
-    
-console.log("reloadPageAfterThisManyImages: ", reloadPageAfterThisManyImages)
 
+// Doesn't work as the foreground image flashes the new image as it's fading out.
+function forceNewPicture2(){
+    clearTimeout(currentTransitionTimeout)
+    currentTransitionTimeout = showNextImage(0);
+}
 
-// Will recursively call itself.
-loadImageIntoFrame();
-
+function forceNewPicture(){
+    clearTimeout(currentTransitionTimeout)
+    updatePhotoFrame(currentPhotoFrame)
+    currentTransitionTimeout = setTimeout(showNextImage, waitForLoadMs);
+}
 
 function openFullscreen(){
 
@@ -103,3 +89,27 @@ function openFullscreen(){
     }   
     
 }
+
+// https://davidwalsh.name/query-string-javascript
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
+
+
+var currentPhotoFrame = 2;
+var waitForLoadMs = 3  *1000;
+
+var refreshCount = 0; 
+//reload the page after this many files so that the browser can cleanup  memory.
+var reloadPageAfterThisManyImages = getUrlParameter('light') || 20;
+    console.log("reloadPageAfterThisManyImages: ", reloadPageAfterThisManyImages)
+
+
+var currentTransitionTimeout;
+// Will recursively call itself.
+loadImageIntoFrame();
+
+document.body.onclick = forceNewPicture;
