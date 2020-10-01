@@ -88,7 +88,7 @@ function getUrlParameter(name) {
 
 
 var currentPhotoFrame = 2;
-var waitForLoadMs = 3  *1000;
+var waitForLoadMs = 10 *1000;
 
 var refreshCount = 0; 
 //reload the page after this many files so that the browser can cleanup  memory.
