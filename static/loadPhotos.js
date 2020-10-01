@@ -29,13 +29,13 @@ function nonVisiblePhotoFrame(){
     }
 }
 
-function showNextImage(loadTimeout=2000){
+function showNextImage(){
     console.log('showNextImage')
     hideForegroundPhotoFrame();
     currentPhotoFrame = nonVisiblePhotoFrame();
     
     // Foreground takes 2s to hide, so need to reload AFTER that.
-    return setTimeout(loadImageIntoFrame, loadTimeout);
+    return setTimeout(loadImageIntoFrame, 2000);
 }
 
 function loadImageIntoFrame(){
@@ -51,18 +51,6 @@ function loadImageIntoFrame(){
         console.log("refreshCount=", refreshCount, " reloadPageAfterThisManyImages: ", reloadPageAfterThisManyImages);
         location.reload();
     }
-}
-
-// Doesn't work as you need to wait for the transition to end before clicking again
-function forceNewPicture1(){
-    clearTimeout(currentTransitionTimeout)
-    currentTransitionTimeout = showNextImage();
-}
-
-// Doesn't work as the foreground image flashes the new image as it's fading out.
-function forceNewPicture2(){
-    clearTimeout(currentTransitionTimeout)
-    currentTransitionTimeout = showNextImage(0);
 }
 
 function forceNewPicture(){
