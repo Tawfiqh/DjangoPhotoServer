@@ -83,3 +83,23 @@ console.log("reloadPageAfterThisManyImages: ", reloadPageAfterThisManyImages)
 
 // Will recursively call itself.
 loadImageIntoFrame();
+
+
+function openFullscreen(){
+
+    var elem = document.getElementById("photoframe_container"); 
+
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
+    else if (elem.webkitEnterFullScreen) {
+        elem.webkitEnterFullScreen();
+    }   
+    
+}
