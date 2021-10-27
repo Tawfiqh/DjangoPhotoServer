@@ -12,12 +12,12 @@ pipenv shell python manage.py process_tasks
 
 ### Accessing the server - routes:
 ---------------------------------
-/  
-e.g: http://raspberrypi2.local:8000/  
+`/`  
+e.g: `http://raspberrypi2.local:8000/`  
 Loads a frontend client that cycles through pictures
 
-/newPic  
-e.g:http://raspberrypi2.local:8000/newPic   
+`/newPic`  
+e.g: `http://raspberrypi2.local:8000/newPic`   
 Fetch a new picture  
 
 
